@@ -2,14 +2,31 @@
 
 [![CI](https://github.com/cosgroveb/debian-packaging-agent-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/cosgroveb/debian-packaging-agent-skill/actions/workflows/ci.yml)
 
-Debian packaging skill with reference documentation, packaged in two places:
+Debian packaging skill with reference documentation for Ruby (gem2deb), Python (pybuild), Rust (debcargo), and Go (dh-golang).
 
-- Claude plugin bundle
-- `.agents` skill bundle
+## Install
+
+```bash
+claude plugin add cosgroveb/debian-packaging-agent-skill
+```
+
+Or clone and link locally:
+
+```bash
+git clone https://github.com/cosgroveb/debian-packaging-agent-skill.git
+claude plugin add ./debian-packaging-agent-skill
+```
+
+## Structure
 
 The source of truth is `skills/` and `doc/`.
 
 `skills/example` is a template only. `make dist` skips it.
+
+Build output goes to two places:
+
+- `dist/claude-plugin/` - Claude Code plugin bundle
+- `dist/agents/` - `.agents` skill bundle
 
 ## Source files
 
