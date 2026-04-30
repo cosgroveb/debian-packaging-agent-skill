@@ -6,15 +6,19 @@ Debian packaging skill with reference documentation for Ruby (gem2deb), Python (
 
 ## Install
 
-```bash
-claude plugin add cosgroveb/debian-packaging-agent-skill
+Add the marketplace and install:
+
+```
+/plugin marketplace add cosgroveb/debian-packaging-agent-skill
+/plugin install debian-packaging-agent-skill@cosgroveb-debian-packaging-agent-skill
+/reload-plugins
 ```
 
-Or clone and link locally:
+Or for local development, run Claude Code with the plugin directory:
 
 ```bash
 git clone https://github.com/cosgroveb/debian-packaging-agent-skill.git
-claude plugin add ./debian-packaging-agent-skill
+claude --plugin-dir ./debian-packaging-agent-skill
 ```
 
 ## Usage
