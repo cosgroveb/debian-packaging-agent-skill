@@ -161,7 +161,7 @@ Fix all errors, rebuild with `dpkg-buildpackage`, and re-check with lintian.
 **Important**: Changes to debian/ only reflect in lintian output after rebuilding, as lintian checks the .changes file.
 
 ### Copyright validation
-Ensure all copyright notices are in `debian/copyright`.
+Verify that all copyright notices are in `debian/copyright`.
 
 ## Ruby team conventions
 
