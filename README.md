@@ -40,7 +40,7 @@ The skill loads the language-specific reference doc (`doc/*.md`) for whichever l
 
 Source of truth is `skills/` and `doc/`. `skills/example/` is a template; `make dist` skips it.
 
-`make dist` builds to `dist/claude-plugin/` (Claude Code plugin bundle) and `dist/agents/` (.agents skill bundle). CI owns `dist/` -- do not edit it by hand.
+`make dist` builds to `dist/claude-plugin/` (Claude Code plugin bundle) and `dist/agents/` (.agents skill bundle). CI owns `dist/`; do not edit it by hand.
 
 Edit `skills/**`, `doc/**`, and `.claude-plugin/**` only.
 
