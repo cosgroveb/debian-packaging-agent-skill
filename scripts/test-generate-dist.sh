@@ -33,6 +33,3 @@ test -f "$repo/dist/claude-plugin/.claude-plugin/marketplace.json"
 
 test -f "$repo/dist/claude-plugin/doc/debian-packaging-main.md"
 test -f "$repo/dist/agents/doc/debian-packaging-main.md"
-
-test ! -e "$repo/dist/agents/.agents/skills/example"
-test ! -e "$repo/dist/claude-plugin/.claude/skills/example"

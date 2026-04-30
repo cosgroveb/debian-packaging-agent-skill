@@ -43,8 +43,6 @@ jobs:
           test -d dist/agents/doc
           test -f dist/claude-plugin/doc/debian-packaging-main.md
           test -f dist/agents/doc/debian-packaging-main.md
-          test ! -e dist/claude-plugin/.claude/skills/example
-          test ! -e dist/agents/.agents/skills/example
 
   sync-dist:
     if: github.event_name == 'push'

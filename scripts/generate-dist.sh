@@ -18,7 +18,6 @@ copy_skills() {
     [[ -d "$src" ]] || continue
 
     skill_name=$(basename "$src")
-    [[ "$skill_name" != "example" ]] || continue
     [[ -f "$src/SKILL.md" ]] || continue
 
     mkdir -p "$dest_root/$skill_name"
