@@ -526,7 +526,7 @@ sudo pbuilder build package.dsc
 sbuild package.dsc
 ```
 
-Ensures build-dependencies are correct and reproducible.
+This verifies that build-dependencies are correct and that builds are reproducible.
 
 ## Documentation resources
 

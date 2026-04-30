@@ -30,7 +30,7 @@ The Debian Rust Team maintains the Rust toolchain (rustc compiler and cargo pack
 - Applications: `<application-name>` or `rust-<name>` (case by case)
 - Feature packages: `librust-<crate-name>+<feature>-dev`
 
-### 2. debcargo Workflow
+### 2. debcargo workflow
 
 #### Initial setup
 ```bash
