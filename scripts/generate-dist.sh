@@ -3,7 +3,6 @@ set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
 skills_root="$root/skills"
-doc_root="$root/doc"
 dist="$root/dist"
 
 rm -rf "$dist"
@@ -25,20 +24,11 @@ copy_skills() {
   done
 }
 
-copy_doc() {
-  local dest_root="$1"
-
-  mkdir -p "$dest_root"
-  rsync -a "$doc_root/" "$dest_root/"
-}
-
 mkdir -p "$dist/claude-plugin/.claude-plugin"
 cp "$root/.claude-plugin/plugin.json" "$dist/claude-plugin/.claude-plugin/plugin.json"
 cp "$root/.claude-plugin/marketplace.json" "$dist/claude-plugin/.claude-plugin/marketplace.json"
 copy_skills "$dist/claude-plugin/.claude/skills"
-copy_doc "$dist/claude-plugin/doc"
 touch "$dist/claude-plugin/.claude/skills/.gitkeep"
 
 copy_skills "$dist/agents/.agents/skills"
-copy_doc "$dist/agents/doc"
 touch "$dist/agents/.agents/skills/.gitkeep"

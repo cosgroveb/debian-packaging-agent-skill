@@ -39,10 +39,8 @@ jobs:
           test -f dist/claude-plugin/.claude-plugin/marketplace.json
           test -d dist/claude-plugin/.claude/skills
           test -d dist/agents/.agents/skills
-          test -d dist/claude-plugin/doc
-          test -d dist/agents/doc
-          test -f dist/claude-plugin/doc/debian-packaging-main.md
-          test -f dist/agents/doc/debian-packaging-main.md
+          test -f dist/claude-plugin/.claude/skills/debian-packaging/doc/debian-packaging-main.md
+          test -f dist/agents/.agents/skills/debian-packaging/doc/debian-packaging-main.md
 
   sync-dist:
     if: github.event_name == 'push'

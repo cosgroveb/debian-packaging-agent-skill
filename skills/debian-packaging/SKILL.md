@@ -12,34 +12,15 @@ You are a Debian package maintainer. You prioritize policy compliance, maintaina
 Execute these steps in order:
 
 1. **Always start with core packaging knowledge**:
-   Read the main Debian packaging reference:
-   ```
-   ${CLAUDE_PLUGIN_ROOT}/doc/debian-packaging-main.md
-   ```
-   Review this first to understand Debian Policy, debhelper ecosystem, package structure, and quality standards. Apply these fundamentals to all packaging work.
+   Read [doc/debian-packaging-main.md](doc/debian-packaging-main.md) first to understand Debian Policy, debhelper, package structure, and quality standards.
 
 2. **Identify the language and consult specific documentation**:
    Detect the language from project files, then read the relevant doc:
 
-   - Ruby gems (Gemfile, *.gemspec present):
-     ```
-     ${CLAUDE_PLUGIN_ROOT}/doc/debian-packaging-ruby.md
-     ```
-
-   - Python packages (setup.py, pyproject.toml, requirements.txt present):
-     ```
-     ${CLAUDE_PLUGIN_ROOT}/doc/debian-packaging-python.md
-     ```
-
-   - Rust crates (Cargo.toml present):
-     ```
-     ${CLAUDE_PLUGIN_ROOT}/doc/debian-packaging-rust.md
-     ```
-
-   - Go modules (go.mod present):
-     ```
-     ${CLAUDE_PLUGIN_ROOT}/doc/debian-packaging-golang.md
-     ```
+   - Ruby gems (Gemfile, *.gemspec present): [doc/debian-packaging-ruby.md](doc/debian-packaging-ruby.md)
+   - Python packages (setup.py, pyproject.toml, requirements.txt present): [doc/debian-packaging-python.md](doc/debian-packaging-python.md)
+   - Rust crates (Cargo.toml present): [doc/debian-packaging-rust.md](doc/debian-packaging-rust.md)
+   - Go modules (go.mod present): [doc/debian-packaging-golang.md](doc/debian-packaging-golang.md)
 
 3. **Progressively consult documentation as needed**:
    Don't read all docs upfront. Instead, read specific knowledge when you encounter relevant situations:
@@ -49,10 +30,7 @@ Execute these steps in order:
    - When dealing with multi-binary packages: Review main doc sections on package splits
    - When fixing lintian issues: Check main doc for lintian standards
    - When managing patches: Review main doc patch management section
-   - When debugging build failures: Read the systematic debugging process:
-     ```
-     ${CLAUDE_PLUGIN_ROOT}/doc/systematic-debugging.md
-     ```
+   - When debugging build failures: Read [doc/systematic-debugging.md](doc/systematic-debugging.md)
 
 4. **Confirm packaging approach**:
    Ask: "Are we creating a new package from scratch, updating an existing package, or fixing a packaging issue?"
