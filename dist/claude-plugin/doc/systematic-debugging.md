@@ -7,7 +7,7 @@ YOU MUST follow this debugging framework for ANY technical issue:
 
 ## Phase 1: Root cause investigation (BEFORE attempting fixes)
 - **Read Error Messages Carefully**: Don't skip past errors or warnings - they often contain the exact solution
-- **Reproduce Consistently**: Ensure you can reliably reproduce the issue before investigating
+- **Reproduce Consistently**: Confirm you can reliably reproduce the issue before investigating
 - **Check Recent Changes**: What changed that could have caused this? Git diff, recent commits, etc.
 
 ## Phase 2: Pattern analysis
