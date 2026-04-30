@@ -24,6 +24,15 @@ jobs:
       - name: Build dist bundles
         run: make dist
 
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Validate plugin
+        run: claude plugin validate ./
+
+      - name: Validate dist plugin bundle
+        run: claude plugin validate dist/claude-plugin/
+
       - name: Verify expected build output
         run: |
           test -f dist/claude-plugin/.claude-plugin/plugin.json
