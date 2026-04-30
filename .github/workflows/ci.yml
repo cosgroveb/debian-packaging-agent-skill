@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'dist/**'
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Test dist generation
+        run: bash scripts/test-generate-dist.sh
+
+      - name: Build dist bundles
+        run: make dist
+
+      - name: Verify expected build output
+        run: |
+          test -f dist/claude-plugin/.claude-plugin/plugin.json
+          test -f dist/claude-plugin/.claude-plugin/marketplace.json
+          test -d dist/claude-plugin/.claude/skills
+          test -d dist/agents/.agents/skills
+          test -d dist/claude-plugin/doc
+          test -d dist/agents/doc
+          test -f dist/claude-plugin/doc/debian-packaging-main.md
+          test -f dist/agents/doc/debian-packaging-main.md
+          test ! -e dist/claude-plugin/.claude/skills/example
+          test ! -e dist/agents/.agents/skills/example
+
+  sync-dist:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Build dist bundles
+        run: make dist
+
+      - name: Commit regenerated dist
+        run: |
+          if [[ -z "$(git status --porcelain -- dist)" ]]; then
+            echo "dist is current"
+            exit 0
+          fi
+          git add dist
+          git commit -m "Update generated bundles"
+          git push

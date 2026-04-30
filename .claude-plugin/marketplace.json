@@ -1,0 +1,25 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "debian-packaging",
+  "metadata": {
+    "description": "Debian packaging skill with comprehensive policy, debhelper, and language-specific knowledge for Ruby, Python, Rust, and Go."
+  },
+  "owner": {
+    "name": "Brian Cosgrove",
+    "email": "cosgroveb@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "debian-packaging",
+      "description": "Debian packaging skill with comprehensive policy, debhelper, and language-specific knowledge for Ruby, Python, Rust, and Go.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Brian Cosgrove",
+        "email": "cosgroveb@gmail.com"
+      },
+      "source": "./",
+      "category": "development",
+      "tags": ["debian", "packaging", "devops"]
+    }
+  ]
+}
