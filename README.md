@@ -17,6 +17,30 @@ git clone https://github.com/cosgroveb/debian-packaging-agent-skill.git
 claude plugin add ./debian-packaging-agent-skill
 ```
 
+## Usage
+
+Once installed, the skill activates when you work on Debian packaging tasks. You can invoke it directly:
+
+```
+/debian-packaging
+```
+
+Or just ask Claude to package something and it picks up the skill from context:
+
+```
+Package this Python project as a .deb
+```
+
+```
+Create debian/ for this Go binary
+```
+
+```
+Fix the lintian errors in this package
+```
+
+The skill reads the appropriate `doc/*.md` reference for the language it detects (Ruby, Python, Rust, or Go) and follows Debian Policy throughout.
+
 ## Structure
 
 The source of truth is `skills/` and `doc/`.
