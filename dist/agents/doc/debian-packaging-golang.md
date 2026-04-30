@@ -1,10 +1,10 @@
-# Debian Go Packaging
+# Debian Go packaging
 
 **Source**: https://go-team.pages.debian.net/packaging.html
 
-## 1. General Notes & Team Conventions
+## 1. General notes and team conventions
 
-### Team Maintenance
+### Team maintenance
 
 All Go packages in Debian are **team-maintained** under the **pkg-go team**:
 
@@ -59,7 +59,7 @@ For **version-less upstream packages**, use this format:
 **During development**: Use `UNRELEASED` in distribution field: `dch -v <debian_version>`
 **When ready to upload**: Change to `unstable`: `dch -r`
 
-## 2. dh-golang Workflow
+## 2. dh-golang workflow
 
 ### How dh-golang works
 
@@ -86,11 +86,11 @@ This is the upstream package name (what you'd use with `go get`). dh-golang need
 
 **Important for CI**: Packages must be buildable/testable after extracting source (`apt source pkg`).
 
-## 3. Binary-only Packages
+## 3. Binary-only packages
 
 Binary-only packages contain a program written in Go but no source code (no API).
 
-### Naming Conventions
+### Naming conventions
 
 **DO NOT use golang- prefix**:
 - Source package: `docker` (NOT `golang-docker`)
@@ -98,11 +98,11 @@ Binary-only packages contain a program written in Go but no source code (no API)
 
 Name packages like the upstream project.
 
-## 4. Library Packages
+## 4. Library packages
 
 Go libraries are packaged **only for building other Go programs in Debian**, not for regular user development.
 
-### Naming Conventions
+### Naming conventions
 
 **Derive names from import path**:
 - Replace slashes with dashes
@@ -134,7 +134,7 @@ When upstream moves (e.g., from code.google.com to GitHub):
 1. **Add compatibility symlink** via `debian/links`
 2. **Rename package** (since location is in package name)
 
-## 5. Go Modules Integration
+## 5. Go modules integration
 
 - dh-golang is aware of Go modules
 - Use the module path as the `XS-Go-Import-Path`
@@ -146,7 +146,7 @@ When upstream moves (e.g., from code.google.com to GitHub):
 - CI doesn't use dpkg-buildpackage
 - Invokes `go` tool directly
 
-## 6. CI/CD Infrastructure
+## 6. CI/CD infrastructure
 
 ### Goals and motivation
 
@@ -180,15 +180,15 @@ Compares two ci-build outputs, prints new breakages.
 - File deletion in debian/rules won't work in CI
 - Use dh_clean or debian/copyright instead
 
-## Key Commands Reference
+## Key commands reference
 
-### Package Creation
+### Package creation
 ```bash
 dh-make-golang <upstream-url>
 dh-make-golang create-salsa-project
 ```
 
-### Version Management
+### Version management
 ```bash
 dch -v <debian_version>   # New version (sets UNRELEASED)
 dch -a                    # Add changelog entry
@@ -208,13 +208,13 @@ ci-diff before.json after.json         # Compare build results
 pgt-gopath -dsc package.dsc            # Construct Go workspace
 ```
 
-## Important File Paths
+## Important file paths
 
 - **Library install location**: `/usr/share/gocode/src/`
 - **GOPATH in CI**: `/srv/gopath`
 - **Go cache in CI**: `/cache/go`
 
-## Important Gotchas
+## Important gotchas
 
 1. **Always use dh-make-golang** - don't copy debian/ from other packages
 2. **Install dh-golang from unstable** - buildds use unstable version

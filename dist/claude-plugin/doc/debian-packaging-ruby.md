@@ -1,30 +1,30 @@
-# Debian Ruby Packaging
+# Debian Ruby packaging
 
 ## Overview
 Debian Ruby Team maintains Ruby interpreters, libraries, and applications in Debian. All packages are hosted in the ruby-team group on Salsa (https://salsa.debian.org/ruby-team).
 
-## gem2deb: The Core Tool
+## gem2deb: the core tool
 
 ### What is gem2deb?
-The preferred packaging tool for Ruby software in Debian. It automates most of the packaging process and serves two purposes:
+The preferred packaging tool for Ruby software in Debian. It automates most of the packaging process and has two uses:
 1. Users can generate .debs from gems locally
 2. Generates Debian source packages for packaging work
 
-### gem2deb Features
+### gem2deb features
 - Does almost everything automatically
 - Uses dh (debhelper)
 - Runs test suite during build for each Ruby implementation
 - Uses single binary package for native libraries (instead of one per Ruby version)
 - Considered the reference implementation of Debian Ruby policy
 
-### Basic gem2deb Workflow
+### Basic gem2deb workflow
 
 #### Installation
 ```bash
 apt-get install gem2deb
 ```
 
-#### Creating a Package from Scratch
+#### Creating a package from scratch
 ```bash
 # Create build directory
 mkdir -p ~/Build/ruby-packaging && cd $_
@@ -37,7 +37,7 @@ This downloads the gem from rubygems.org and creates:
 - Source package (*.dsc, *.orig.tar.gz, *.debian.tar.xz)
 - Binary package (*.deb)
 
-#### Fetching from Alternative Sources
+#### Fetching from alternative sources
 ```bash
 # For rails-assets-* gems
 gem fetch --source https://rails-assets.org rails-assets-jquery
@@ -47,16 +47,16 @@ gem2deb rails-assets-jquery-*.gem
 gem2deb path/to/foo.gem
 ```
 
-#### If Initial Build Fails
+#### If initial build fails
 ```bash
 cd ruby-<foo-version>
 dpkg-source -b .
 cd ..
 ```
 
-## Git Workflow and Repository Management
+## Git workflow and repository management
 
-### Branch Structure
+### Branch structure
 Three main branches (for non-native packages):
 1. **pristine-tar**: Stores original tarballs (from gem2deb or gemwatch)
 2. **upstream**: Tracks unpacked upstream tarballs
@@ -66,12 +66,12 @@ Additional branches may exist for:
 - Backports: `wheezy-backports` (replaces master)
 - Stable/testing updates: `master-<codename>`, `upstream-<codename>`
 
-### Required Tools
+### Required tools
 ```bash
 apt-get install myrepos git-buildpackage pristine-tar gem2deb
 ```
 
-### Cloning the Team Repository
+### Cloning the team repository
 ```bash
 # Clone meta repository
 git clone git@salsa.debian.org:ruby-team/meta.git ruby-team
@@ -90,15 +90,15 @@ mr --force -j 5 checkout
 gbp clone --pristine-tar git@salsa.debian.org:ruby-team/<pkg-name>.git
 ```
 
-### Creating New Package Repository
+### Creating new package repository
 
-#### From Existing Package
+#### From existing package
 ```bash
 cd ruby-team
 ./setup-project
 ```
 
-#### Packaging New Gem
+#### Packaging new gem
 ```bash
 # Generate initial package
 gem2deb foo
@@ -125,14 +125,14 @@ git tag debian/0.7-1
 git push --tags
 ```
 
-## File Editing and Fine-Tuning
+## File editing and fine-tuning
 
-### Key Files to Edit (in debian/)
+### Key files to edit (in debian/)
 1. **copyright**: License information
 2. **control**: Package metadata, dependencies
 3. **changelog**: Version history and changes
 
-### Finding Package Information
+### Finding package information
 - rubygems.org (search for gem, check homepage)
 - LICENSE, COPYING, or README files in source
 - Use `licensecheck` for license detection:
@@ -140,19 +140,19 @@ git push --tags
   licensecheck --deb-machine --copyright LICENSE
   ```
 
-### License Notes
+### License notes
 - Two MIT variants exist: Expat or X11
 - Use Expat when text matches the Expat project license
 
-## Building and Quality Checks
+## Building and quality checks
 
-### Building from Source Repository
+### Building from source repository
 ```bash
 dpkg-buildpackage
 # Ignore signing errors initially
 ```
 
-### Lintian Validation
+### Lintian validation
 ```bash
 lintian
 ```
@@ -160,26 +160,26 @@ Fix all errors, rebuild with `dpkg-buildpackage`, and re-check with lintian.
 
 **Important**: Changes to debian/ only reflect in lintian output after rebuilding, as lintian checks the .changes file.
 
-### Copyright Validation
+### Copyright validation
 Ensure all copyright notices are in `debian/copyright`.
 
-## Ruby Team Conventions
+## Ruby team conventions
 
-### Package Naming
+### Package naming
 - Libraries: `ruby-<gemname>`
 - Applications may have different naming
 
-### Testing Requirements
+### Testing requirements
 - Test suite should be enabled during build
 - Tests run for each Ruby implementation
 
-### Handling Dependencies
+### Handling dependencies
 Always install build dependencies via apt, not `gem install`.
 
-### Setting Environment Variables
+### Setting environment variables
 Configure DEBFULLNAME and DEBEMAIL to avoid manual entry each time.
 
-## Updating Existing Packages
+## Updating existing packages
 
 ### Prerequisites
 ```bash
@@ -187,7 +187,7 @@ Configure DEBFULLNAME and DEBEMAIL to avoid manual entry each time.
 gbp clone --pristine-tar git@salsa.debian.org:ruby-team/<pkg-name>.git
 ```
 
-### Using debian/watch (Preferred)
+### Using debian/watch (preferred)
 ```bash
 # Test watch file
 uscan --verbose --report
@@ -200,7 +200,7 @@ uscan --verbose --download-version <version>
 gbp import-orig --pristine-tar <tarball>
 ```
 
-### Manual Tarball Creation
+### Manual tarball creation
 ```bash
 # Fetch latest version
 gem2tgz <gemname>
@@ -225,7 +225,7 @@ gbp dch -a
 dch -v <new-upstream-version>-1
 ```
 
-### Final Steps
+### Final steps
 ```bash
 # Change UNRELEASED to unstable (or experimental for breaking changes)
 git push -u --all --follow-tags
@@ -235,20 +235,20 @@ echo "gem '<library name>', '<version>'" > Gemfile
 bundle install --local
 ```
 
-## Handling API Breaking Changes
+## Handling API breaking changes
 
-### When Changes are Breaking
+### When changes are breaking
 Assume SemVer compliance (https://semver.org):
 - Major version updates when version >= 1.0
 - Minor updates when version < 1.0
 
-### Required Steps
+### Required steps
 1. Verify autopkgtests of all reverse dependencies
 2. Rebuild all reverse build dependencies
 3. Use ruby-team-meta-build or upload to experimental
 4. Watch britney pseudo-excuses for experimental
 
-### Upload Paths
+### Upload paths
 **Path A (Ideal)**:
 - Fix all breaking packages before uploading to unstable
 
@@ -262,19 +262,19 @@ Assume SemVer compliance (https://semver.org):
 ### Exceptions
 Be careful with minor updates for: rails, ruby-rack, ruby-doorkeeper, ruby-devise, ruby-graphql, ruby-grape
 
-## Special Cases
+## Special cases
 
-### Multiple gemspec Files
+### Multiple gemspec files
 Create `debian/gemspec` symlink or set `DH_RUBY_GEMSPEC` in `debian/rules`.
 Remove `Testsuite` field from `debian/control` and create `debian/tests` manually.
 
-### Rails Engines
+### Rails engines
 Gems with `app/assets`, `vendor/assets`, or `lib/assets` directories are Rails engines.
 Often provide JavaScript libraries via Rails asset pipeline.
 
-## Requesting Sponsorship
+## Requesting sponsorship
 
-### Pre-Sponsorship Checklist
+### Pre-sponsorship checklist
 - [ ] Builds in clean chroot (use sbuild or pbuilder)
 - [ ] Lintian-clean (or issues explained in debian/changelog)
 - [ ] debian/watch file correct (`uscan --download-current-version` works)
@@ -283,13 +283,13 @@ Often provide JavaScript libraries via Rails asset pipeline.
 - [ ] Test suite enabled and passing
 - [ ] autopkgtest passing
 
-### Sponsorship Request Process
+### Sponsorship request process
 1. Change distribution from `UNRELEASED` to `unstable`
 2. Email debian-ruby@lists.debian.org
 
-## Communication Channels
+## Communication channels
 
-### Mailing List
+### Mailing list
 - debian-ruby@lists.debian.org
 
 ### IRC
@@ -298,7 +298,7 @@ Often provide JavaScript libraries via Rails asset pipeline.
 ### Salsa
 - https://salsa.debian.org/ruby-team
 
-## Quick Reference Commands
+## Quick reference commands
 
 ```bash
 # Install tools
