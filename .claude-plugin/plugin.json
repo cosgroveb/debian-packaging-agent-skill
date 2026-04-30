@@ -1,6 +1,6 @@
 {
   "name": "debian-packaging",
-  "description": "Debian packaging skill with comprehensive policy, debhelper, and language-specific knowledge for Ruby, Python, Rust, and Go.",
+  "description": "Debian packaging skill covering policy, debhelper, and language-specific packaging for Ruby, Python, Rust, and Go.",
   "version": "0.1.0",
   "author": {
     "name": "Brian Cosgrove",

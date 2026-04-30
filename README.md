@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/cosgroveb/debian-packaging-agent-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/cosgroveb/debian-packaging-agent-skill/actions/workflows/ci.yml)
 
-Debian packaging skill with comprehensive reference documentation, packaged in two places:
+Debian packaging skill with reference documentation, packaged in two places:
 
 - Claude plugin bundle
 - `.agents` skill bundle
