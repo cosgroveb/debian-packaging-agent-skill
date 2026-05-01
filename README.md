@@ -8,7 +8,7 @@ Claude Code plugin for Debian packaging. Covers debhelper, debian/rules, package
 
 ```
 /plugin marketplace add cosgroveb/debian-packaging-agent-skill
-/plugin install debian-packaging-agent-skill@cosgroveb-debian-packaging-agent-skill
+/plugin install debian-packaging@debian-packaging
 /reload-plugins
 ```
 
