@@ -154,7 +154,9 @@ Depends: python3 (>= 3.Y), ${python3:Depends}, ${misc:Depends}
 
 ### 7.2 Build dependencies
 
-**Critical**: Must list ALL runtime dependencies in `Build-Depends` to prevent PyPI downloads during build.
+List build-time dependencies, including Python modules imported by build-time
+tests, in `Build-Depends`. Put runtime dependencies in `Depends`, using
+`${python3:Depends}` plus explicit dependencies when needed.
 
 pybuild sets `http_proxy=127.0.0.1:9` to block unauthorized network access.
 
@@ -166,7 +168,26 @@ pybuild sets `http_proxy=127.0.0.1:9` to block unauthorized network access.
 
 ## 9. Testing and quality assurance
 
-### 9.1 autopkgtest (DEP-8)
+### 9.1 Clean build
+
+Build Python packages in a clean environment before asking for review:
+
+```bash
+dpkg-buildpackage -S -us -uc
+sbuild --dist=unstable ../<source>_<version>.dsc
+```
+
+This checks whether `Build-Depends` is sufficient for that clean build
+environment. A Python package can appear to build locally because dependencies
+are already installed on the developer machine. That is not enough before
+asking for review.
+
+When build-time tests import Python modules, list those modules in
+`Build-Depends`. If the package also imports them at runtime, keep them in
+`Depends` too. Do not rely on `pip`, PyPI, tox downloading packages, or locally
+installed modules during the build.
+
+### 9.2 autopkgtest (DEP-8)
 
 **Enable autodep8**:
 ```debcontrol
@@ -178,7 +199,7 @@ Testsuite: autopkgtest-pkg-python
 autopkgtest -- schroot sid-amd64-sbuild
 ```
 
-### 9.2 Test suite integration
+### 9.3 Test suite integration
 
 pybuild auto-detects test frameworks: pytest, nose, unittest, tox.
 
@@ -247,11 +268,12 @@ Option 2: Combined
 
 ### New package checklist
 - [ ] debian/control: `dh-sequence-python3`, `python3-all`
-- [ ] debian/control: All runtime deps in Build-Depends
+- [ ] debian/control: Build-time deps in `Build-Depends`
 - [ ] debian/control: `X-Python3-Version` if min > current stable
 - [ ] debian/rules: `export PYBUILD_NAME=<module>`
 - [ ] debian/rules: `dh $@ --buildsystem=pybuild`
 - [ ] debian/watch: Use `pypi.debian.net`
+- [ ] Clean build: `sbuild --dist=unstable ../<source>_<version>.dsc` or equivalent target suite
 - [ ] Package naming: `python3-<name>` for libraries
 - [ ] Shebang: `#!/usr/bin/python3`
 - [ ] autopkgtest: Add `Testsuite: autopkgtest-pkg-python`
