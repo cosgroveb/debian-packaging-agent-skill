@@ -438,6 +438,27 @@ execute_after_dh_auto_install:
 	install -D -m 0644 extra/config debian/tmp/etc/myapp/config
 ```
 
+## git-buildpackage (gbp)
+
+`gbp` is a helper for maintaining Debian packaging in git. It is common in many
+Debian team workflows, but Debian Policy does not require it. Do not tell the
+user to "use gbp" without naming the command and why it is needed.
+
+Common commands:
+```bash
+# Build from a packaging git repository
+gbp buildpackage
+
+# Import a new upstream tarball into a gbp repository
+gbp import-orig ../package_version.orig.tar.gz
+
+# Update debian/changelog from git commits
+gbp dch
+```
+
+Use the package team's documented workflow when one exists. If the package does
+not use `gbp`, do not introduce it just to satisfy a generic checklist.
+
 ## Environment variables
 
 **DH_VERBOSE=1**: Verbose output (same as dh --verbose)
@@ -501,7 +522,7 @@ Indicates which Debian Policy version the package complies with. Update when you
 6. **Not testing package upgrades** - Test upgrade path, not just fresh install
 7. **Conffile handling** - Don't ship /etc files in multiple packages
 8. **Symlink attacks** - Use absolute paths, validate before creating symlinks
-9. **Missing dependencies** - Run lintian, test in clean chroot
+9. **Missing build dependencies** - Build with `sbuild` or equivalent, not only on the developer's machine
 10. **Upstream tarball modifications** - Use +dfsg version suffix, document in copyright
 
 ## Workflow summary
@@ -511,22 +532,32 @@ Indicates which Debian Policy version the package complies with. Update when you
 3. **Create debian/:** Initialize debian/control, changelog, rules, copyright, etc.
 4. **Set compat:** `Build-Depends: debhelper-compat (= 13)`
 5. **Build:** `dpkg-buildpackage -us -uc`
-6. **Check:** `lintian -i *.changes`
-7. **Test:** `sudo dpkg -i *.deb`, verify installation
-8. **Iterate:** Fix issues, increment debian/changelog, rebuild
+6. **Source build:** `dpkg-buildpackage -S -us -uc`
+7. **Clean build:** `sbuild --dist=unstable ../<source>_<version>.dsc` or equivalent target suite
+8. **Check:** `lintian -i ../*.changes`
+9. **Test:** `sudo dpkg -i *.deb`, verify installation
+10. **Iterate:** Fix issues, increment debian/changelog, rebuild
 
 ## Testing in clean environment
 
-**pbuilder** or **sbuild** for clean chroot builds:
+Use **sbuild** or **pbuilder** for clean chroot builds:
 ```bash
-sudo pbuilder create
-sudo pbuilder build package.dsc
+dpkg-buildpackage -S -us -uc
+sbuild --dist=unstable ../<source>_<version>.dsc
 
-# Or sbuild (modern alternative)
-sbuild package.dsc
+# Or pbuilder
+sudo pbuilder create
+sudo pbuilder build ../<source>_<version>.dsc
 ```
 
-This verifies that build-dependencies are correct and that builds are reproducible.
+A package that only builds on the developer's machine has not checked its
+Build-Depends in a clean environment. Before asking Debian reviewers to look at
+the package, build it with `sbuild` or a comparable chroot builder. This catches
+missing Build-Depends, undeclared toolchain assumptions, and accidental use of
+packages installed only on the developer's machine.
+
+Use the target suite for the package under review. Use `pbuilder` instead when
+that is the local workflow.
 
 ## Documentation resources
 

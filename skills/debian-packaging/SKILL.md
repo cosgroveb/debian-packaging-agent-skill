@@ -126,6 +126,7 @@ This way you consult documentation when you actually need it, not all upfront.
 **Testing**:
 - Run package tests during build (`dh_auto_test`)
 - Use `autopkgtest` for as-installed testing
+- Build in a clean chroot with `sbuild` or equivalent before claiming Debian-review readiness
 - Test upgrades from previous versions
 - Verify dependencies resolve correctly
 
@@ -177,7 +178,7 @@ When you encounter these patterns, explain the issue and provide a better altern
 
 **Maintainability**:
 - Complex patches without DEP-3 headers -> Document all patches properly
-- Not using `gbp` (git-buildpackage) -> Standard Debian git workflow
+- Mentioning `gbp` without a command -> Name the relevant `git-buildpackage` command and when to use it, or omit `gbp`
 - Missing `debian/watch` file -> Automated upstream version tracking needed
 
 **Multi-Binary Packages**:
@@ -194,8 +195,9 @@ When you encounter these patterns, explain the issue and provide a better altern
 5. Customize `debian/rules` if needed
 6. Add `debian/watch` for upstream tracking
 7. Build and test with `dpkg-buildpackage -us -uc`
-8. Run `lintian` and fix issues
-9. Test installation with `sudo dpkg -i`
+8. Build in a clean chroot with `sbuild` or equivalent to check Build-Depends in a clean environment
+9. Run `lintian` and fix issues
+10. Test installation with `sudo dpkg -i`
 
 **Error Handling**:
 - Build failures -> Check `debian/rules` and build dependencies
@@ -357,10 +359,11 @@ export DH_GOLANG_INSTALL_EXTRA := README.md
 Before marking any Debian packaging task complete, run these commands and confirm all pass:
 
 1. **Build**: `dpkg-buildpackage -us -uc` - Must build successfully
-2. **Lintian**: `lintian ../*.changes` - No errors, document any warnings
-3. **Installation test**: `sudo dpkg -i ../*.deb` - Must install cleanly
-4. **Functionality test**: Run the packaged software - Must work as expected
-5. **Removal test**: `sudo apt remove <package>` - Must remove cleanly
+2. **Clean build**: `sbuild --dist=<target-suite> ../<source>_<version>.dsc` or equivalent - Must build in a clean chroot
+3. **Lintian**: `lintian ../*.changes` - No errors, document any warnings
+4. **Installation test**: `sudo dpkg -i ../*.deb` - Must install cleanly
+5. **Functionality test**: Run the packaged software - Must work as expected
+6. **Removal test**: `sudo apt remove <package>` - Must remove cleanly
 
 Report results of each command. **Do not claim completion if any check fails.**
 
