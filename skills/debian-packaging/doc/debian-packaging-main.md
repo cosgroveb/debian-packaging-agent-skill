@@ -321,6 +321,17 @@ dpkg-buildpackage -us -uc
 
 ## Lintian quality checks
 
+Before hand-fixing lintian issues, run `lintian-brush` and inspect what it would
+change:
+
+```bash
+lintian-brush --dry-run --diff
+```
+
+If the diff is correct, run `lintian-brush` and review the resulting changes. If
+the package uses `gbp dch` to generate `debian/changelog`, consider
+`lintian-brush --no-update-changelog`.
+
 **Run lintian:**
 ```bash
 lintian package.changes
@@ -348,6 +359,30 @@ debian/source/lintian-overrides:
 ```
 package-name: tag-name path/to/file
 ```
+
+## Maintainer cleanup tools
+
+Use these tools to make repeated packaging runs more consistent. They do not
+replace human review.
+
+**debian/control normalization:**
+```bash
+cme fix dpkg-control
+```
+
+Review the diff after running `cme`; it can reorder fields or reformat files.
+
+**debian/copyright check:**
+```bash
+lrc
+```
+
+Use `lrc` output to compare `debian/copyright` with licenses detected by
+`licensecheck`.
+
+**Routine update workflows:**
+If the package already uses `routine-update`, follow that package workflow
+instead of reimplementing its steps by hand.
 
 ## Source formats
 
@@ -459,6 +494,9 @@ gbp dch
 Use the package team's documented workflow when one exists. If the package does
 not use `gbp`, do not introduce it just to satisfy a generic checklist.
 
+When commits are allowed and `gbp dch` is part of the workflow, make small
+commits with messages that can become useful changelog entries.
+
 ## Environment variables
 
 **DH_VERBOSE=1**: Verbose output (same as dh --verbose)
@@ -531,12 +569,15 @@ Indicates which Debian Policy version the package complies with. Update when you
 2. **Extract:** `tar xf package_version.orig.tar.gz`
 3. **Create debian/:** Initialize debian/control, changelog, rules, copyright, etc.
 4. **Set compat:** `Build-Depends: debhelper-compat (= 13)`
-5. **Build:** `dpkg-buildpackage -us -uc`
-6. **Source build:** `dpkg-buildpackage -S -us -uc`
-7. **Clean build:** `sbuild --dist=unstable ../<source>_<version>.dsc` or equivalent target suite
-8. **Check:** `lintian -i ../*.changes`
-9. **Test:** `sudo dpkg -i *.deb`, verify installation
-10. **Iterate:** Fix issues, increment debian/changelog, rebuild
+5. **Normalize control:** `cme fix dpkg-control`, then review the diff
+6. **Check copyright:** `lrc`
+7. **Pre-fix lintian issues:** `lintian-brush --dry-run --diff`, then apply correct changes
+8. **Build:** `dpkg-buildpackage -us -uc`
+9. **Source build:** `dpkg-buildpackage -S -us -uc`
+10. **Clean build:** `sbuild --dist=unstable ../<source>_<version>.dsc` or equivalent target suite
+11. **Check:** `lintian -i ../*.changes`
+12. **Test:** `sudo dpkg -i *.deb`, verify installation
+13. **Iterate:** Fix issues, increment debian/changelog, rebuild
 
 ## Testing in clean environment
 
