@@ -11,9 +11,9 @@ Cut process-speak, packaging jargon, and internal labels unless the reader needs
 Prefer the concrete label a person would look for on screen or in the repo.
 
 ## reference documentation
-The `doc/` directory contains Debian packaging knowledge that was previously
-stored in atuin kv. These files are the authoritative reference for the skill.
-When updating reference docs, preserve the existing structure and section headings.
+The `doc/` directory contains Debian packaging knowledge. These files are the 
+authoritative reference for the skill. When updating reference docs, preserve the
+existing structure and section headings.
 
 ## workflow
 Check repo docs and workflow files before running build or generation commands.
