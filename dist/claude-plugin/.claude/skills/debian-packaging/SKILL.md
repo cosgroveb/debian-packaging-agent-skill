@@ -119,9 +119,15 @@ This way you consult documentation when you actually need it, not all upfront.
 
 **Lintian Compliance**:
 - Run `lintian` on built packages before upload
+- Run `lintian-brush` before hand-fixing lintian issues, then review its diff
 - Fix all errors, warnings (or document overrides with justification)
 - Understand severity levels (error, warning, info, pedantic)
 - Use `lintian-overrides` sparingly and only with clear rationale
+
+**Maintainer cleanup tools**:
+- Run `cme fix dpkg-control` to standardize `debian/control` formatting when available
+- Run `lrc` and inspect its output when checking `debian/copyright`
+- If commits are allowed and the package uses `gbp`, make small commits with changelog-quality messages and use `gbp dch` near the end
 
 **Testing**:
 - Run package tests during build (`dh_auto_test`)
@@ -194,10 +200,13 @@ When you encounter these patterns, explain the issue and provide a better altern
 4. Write `debian/copyright` (DEP-5 format)
 5. Customize `debian/rules` if needed
 6. Add `debian/watch` for upstream tracking
-7. Build and test with `dpkg-buildpackage -us -uc`
-8. Build in a clean chroot with `sbuild` or equivalent to check Build-Depends in a clean environment
-9. Run `lintian` and fix issues
-10. Test installation with `sudo dpkg -i`
+7. Run `cme fix dpkg-control` and review changes to `debian/control`
+8. Run `lrc` and review `debian/copyright` findings
+9. Run `lintian-brush --dry-run --diff`, then apply and review correct changes before hand-fixing lintian issues
+10. Build and test with `dpkg-buildpackage -us -uc`
+11. Build in a clean chroot with `sbuild` or equivalent to check Build-Depends in a clean environment
+12. Run `lintian` and fix issues
+13. Test installation with `sudo dpkg -i`
 
 **Error Handling**:
 - Build failures -> Check `debian/rules` and build dependencies
@@ -358,12 +367,15 @@ export DH_GOLANG_INSTALL_EXTRA := README.md
 
 Before marking any Debian packaging task complete, run these commands and confirm all pass:
 
-1. **Build**: `dpkg-buildpackage -us -uc` - Must build successfully
-2. **Clean build**: `sbuild --dist=<target-suite> ../<source>_<version>.dsc` or equivalent - Must build in a clean chroot
-3. **Lintian**: `lintian ../*.changes` - No errors, document any warnings
-4. **Installation test**: `sudo dpkg -i ../*.deb` - Must install cleanly
-5. **Functionality test**: Run the packaged software - Must work as expected
-6. **Removal test**: `sudo apt remove <package>` - Must remove cleanly
+1. **Control normalization**: `cme fix dpkg-control` - Review any changes
+2. **Copyright check**: `lrc` - Review findings against `debian/copyright`
+3. **Automated lintian fixes**: `lintian-brush --dry-run --diff` - Review suggested changes before applying
+4. **Build**: `dpkg-buildpackage -us -uc` - Must build successfully
+5. **Clean build**: `sbuild --dist=<target-suite> ../<source>_<version>.dsc` or equivalent - Must build in a clean chroot
+6. **Lintian**: `lintian ../*.changes` - No errors, document any warnings
+7. **Installation test**: `sudo dpkg -i ../*.deb` - Must install cleanly
+8. **Functionality test**: Run the packaged software - Must work as expected
+9. **Removal test**: `sudo apt remove <package>` - Must remove cleanly
 
 Report results of each command. **Do not claim completion if any check fails.**
 
