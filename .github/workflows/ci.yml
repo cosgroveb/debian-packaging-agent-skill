@@ -21,7 +21,7 @@ jobs:
       - name: Test dist generation
         run: bash scripts/test-generate-dist.sh
 
-      - name: Build dist bundles
+      - name: Build dist bundle
         run: make dist
 
       - name: Install Claude Code
@@ -30,16 +30,9 @@ jobs:
       - name: Validate plugin
         run: claude plugin validate ./
 
-      - name: Validate dist plugin bundle
-        run: claude plugin validate dist/claude-plugin/
-
       - name: Verify expected build output
         run: |
-          test -f dist/claude-plugin/.claude-plugin/plugin.json
-          test -f dist/claude-plugin/.claude-plugin/marketplace.json
-          test -d dist/claude-plugin/.claude/skills
           test -d dist/agents/.agents/skills
-          test -f dist/claude-plugin/.claude/skills/debian-packaging/doc/debian-packaging-main.md
           test -f dist/agents/.agents/skills/debian-packaging/doc/debian-packaging-main.md
 
   sync-dist:
@@ -56,7 +49,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Build dist bundles
+      - name: Build dist bundle
         run: make dist
 
       - name: Commit regenerated dist

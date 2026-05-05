@@ -24,11 +24,5 @@ copy_skills() {
   done
 }
 
-mkdir -p "$dist/claude-plugin/.claude-plugin"
-cp "$root/.claude-plugin/plugin.json" "$dist/claude-plugin/.claude-plugin/plugin.json"
-cp "$root/.claude-plugin/marketplace.json" "$dist/claude-plugin/.claude-plugin/marketplace.json"
-copy_skills "$dist/claude-plugin/.claude/skills"
-touch "$dist/claude-plugin/.claude/skills/.gitkeep"
-
 copy_skills "$dist/agents/.agents/skills"
 touch "$dist/agents/.agents/skills/.gitkeep"

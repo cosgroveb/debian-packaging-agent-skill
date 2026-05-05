@@ -25,12 +25,7 @@ SKILL
 )
 
 test -f "$repo/dist/agents/.agents/skills/real-skill/SKILL.md"
-test -f "$repo/dist/claude-plugin/.claude/skills/real-skill/SKILL.md"
 test -f "$repo/dist/agents/.agents/skills/.gitkeep"
-test -f "$repo/dist/claude-plugin/.claude/skills/.gitkeep"
-test -f "$repo/dist/claude-plugin/.claude-plugin/plugin.json"
-test -f "$repo/dist/claude-plugin/.claude-plugin/marketplace.json"
 
 # doc files travel inside the skill directory
-test -f "$repo/dist/claude-plugin/.claude/skills/debian-packaging/doc/debian-packaging-main.md"
 test -f "$repo/dist/agents/.agents/skills/debian-packaging/doc/debian-packaging-main.md"
