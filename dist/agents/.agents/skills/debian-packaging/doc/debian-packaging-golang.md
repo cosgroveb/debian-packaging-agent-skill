@@ -78,6 +78,14 @@ XS-Go-Import-Path: github.com/user/package
 
 This is the upstream package name (what you'd use with `go get`). dh-golang needs this to run `go install`.
 
+For binary Go packages, include static-linkage substitution metadata in the
+binary stanza:
+
+```
+Built-Using: ${misc:Built-Using}
+Static-Built-Using: ${misc:Static-Built-Using}
+```
+
 ### Environment variables and options
 
 **The CI infrastructure evaluates environment variables**:
@@ -97,6 +105,20 @@ Binary-only packages contain a program written in Go but no source code (no API)
 - Binary package: `docker` (NOT `golang-docker`)
 
 Name packages like the upstream project.
+
+### External command dependencies
+
+`${shlibs:Depends}` only detects linked shared libraries. It will not discover
+commands a Go binary shells out to.
+
+- Add non-Essential runtime commands used by the program to `Depends`.
+- Add tools used only by tests to `Build-Depends`, then verify in clean `sbuild`.
+- Do not add unversioned `Depends` on Essential packages such as `bash`; Debian
+  assumes they are present.
+
+Example: a coding-agent CLI that shells out to `git` for runtime feedback and
+uses `ps` only in tests should usually have `git` in `Depends` and `procps` in
+`Build-Depends`.
 
 ## 4. Library packages
 
@@ -226,6 +248,8 @@ pgt-gopath -dsc package.dsc            # Construct Go workspace
 8. **Version format matters** - use `0.0~git20130606.b00ec39-1` for version-less upstreams
 9. **Add compat symlinks when upstream moves** - and rename package
 10. **Use UNRELEASED during development** - change to unstable only when ready
+11. **Go hardening lintian tags can be stale/noisy** - prefer sid lintian before
+    changing Go build modes for `hardening-no-pie` or `hardening-no-bindnow`
 
 ## Resources
 

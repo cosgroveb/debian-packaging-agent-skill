@@ -271,7 +271,7 @@ Maintainer: Your Name <your@email>
 Build-Depends: debhelper-compat (= 13),
                dh-golang,
                golang-go (>= 1.18)
-Standards-Version: 4.6.2
+Standards-Version: 4.7.4
 Homepage: https://example.com/project
 Vcs-Git: https://salsa.debian.org/your/repo.git
 Vcs-Browser: https://salsa.debian.org/your/repo

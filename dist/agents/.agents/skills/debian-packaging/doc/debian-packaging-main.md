@@ -262,6 +262,15 @@ Executed in sequence during install/upgrade/remove:
 **Suggests:** Optional enhancements
 **Enhances:** Reverse suggests
 
+Do not add unversioned `Depends` on Essential packages such as `bash`; Debian
+assumes Essential packages are installed. If a package needs a specific version
+of an Essential package, use a versioned dependency and document why.
+
+Substitution variables do not discover external commands. If a program shells
+out to a non-Essential command at runtime, add that package explicitly to
+`Depends`. If a command is used only by tests, put it in `Build-Depends` and
+verify with a clean build environment.
+
 **Conflicts:** Cannot be installed together
 **Breaks:** This version breaks older version of other package
 **Replaces:** Files replaced during upgrade
@@ -353,6 +362,13 @@ lintian -i -I --pedantic package.changes  # Verbose with info
 - Spelling errors in descriptions
 - Missing documentation
 - Outdated debhelper compat levels
+
+Run lintian from the target Debian suite when host and target differ. Ubuntu
+stable lintian can report tags that sid lintian has changed or removed.
+
+Treat hardening tags carefully for Go binaries. Do not add overrides or change
+Go build modes for `hardening-no-pie` or `hardening-no-bindnow` until checking
+current sid lintian and the package team's expectations.
 
 **Override false positives:**
 debian/source/lintian-overrides:
@@ -489,10 +505,25 @@ gbp import-orig ../package_version.orig.tar.gz
 
 # Update debian/changelog from git commits
 gbp dch
+
+# Tag the Debian release when the workflow expects debian/<version>
+gbp tag --debian-branch=debian/sid --no-sign-tags
+
+# Push branches and gbp-managed tags
+gbp push
 ```
 
 Use the package team's documented workflow when one exists. If the package does
 not use `gbp`, do not introduce it just to satisfy a generic checklist.
+
+If a sponsor rewrites or retags `debian/<version>`, delete the stale local tag
+before fetching:
+
+```bash
+git tag -d debian/<version>
+git fetch origin
+git pull --ff-only
+```
 
 When commits are allowed and `gbp dch` is part of the workflow, make small
 commits with messages that can become useful changelog entries.
