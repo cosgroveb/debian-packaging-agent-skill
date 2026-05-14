@@ -73,10 +73,14 @@ apt-get install dh-golang  # from Debian unstable
 
 **Required configuration in debian/control**:
 ```
-XS-Go-Import-Path: github.com/user/package
+XS-Go-Import-Path: github.com/user/module
 ```
 
-This is the upstream package name (what you'd use with `go get`). dh-golang needs this to run `go install`.
+Use the complete Go module path declared in `go.mod`, including any `/vN`
+major-version suffix. For source packages that intentionally package multiple
+modules, Debian documents `XS-Go-Import-Path` as a comma-separated list of
+module paths. `dh-golang` uses this metadata to run `go install` and place the
+module source under `/usr/share/gocode/src/${module_path}`.
 
 For binary Go packages, include static-linkage substitution metadata in the
 binary stanza:
@@ -126,18 +130,21 @@ Go libraries are packaged **only for building other Go programs in Debian**, not
 
 ### Naming conventions
 
-**Derive names from import path**:
-- Replace slashes with dashes
-- Use canonical identifier instead of hostname
-- Add `-dev` suffix
+**Derive names from module path**:
+- Use the module path declared in `go.mod`, not the upstream repository URL or
+  a package import subdirectory.
+- Replace slashes with dashes.
+- Use the canonical identifier instead of the hostname.
+- Include any `/vN` major-version suffix as `-vN`.
+- Add `-dev` to the binary library package.
 
 **Examples**:
 
-| Import path | Debian package name |
-|------------|---------------------|
-| `github.com/stapelberg/websocket` | `golang-github-stapelberg-websocket-dev` |
-| `golang.org/x/oauth2` | `golang-golang-x-oauth2-dev` |
-| `google.golang.org/appengine` | `golang-google-appengine-dev` |
+| Go module path | Debian source package | Debian binary library package |
+|----------------|-----------------------|-------------------------------|
+| `github.com/go-jose/go-jose` | `golang-github-go-jose-go-jose` | `golang-github-go-jose-go-jose-dev` |
+| `github.com/go-jose/go-jose/v4` | `golang-github-go-jose-go-jose-v4` | `golang-github-go-jose-go-jose-v4-dev` |
+| `golang.org/x/oauth2` | `golang-golang-x-oauth2` | `golang-golang-x-oauth2-dev` |
 
 ### File locations
 
@@ -161,6 +168,12 @@ When upstream moves (e.g., from code.google.com to GitHub):
 - dh-golang is aware of Go modules
 - Use the module path as the `XS-Go-Import-Path`
 - Follow same naming conventions based on import/module path
+- Prefer one Go library module per Debian source package unless that creates a
+  significant maintenance burden.
+- Install source files, including `go.mod` and `go.sum`, under
+  `/usr/share/gocode/src/${module_path}`.
+- Go packages without a `go.mod` should normally be treated as one pseudo-module
+  rooted at the upstream repository path.
 
 ### Vendoring considerations
 
