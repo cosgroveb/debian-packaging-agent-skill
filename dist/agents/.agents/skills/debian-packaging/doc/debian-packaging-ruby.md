@@ -141,8 +141,10 @@ git push --tags
   ```
 
 ### License notes
-- Two MIT variants exist: Expat or X11
-- Use Expat when text matches the Expat project license
+- Use Expat when the license text matches that MIT variant. X11 and other
+  MIT-labelled licenses can have different terms.
+- Follow the shared copyright guidance in
+  [Maintainer cleanup tools](debian-packaging-main.md#maintainer-cleanup-tools).
 
 ## Building and quality checks
 

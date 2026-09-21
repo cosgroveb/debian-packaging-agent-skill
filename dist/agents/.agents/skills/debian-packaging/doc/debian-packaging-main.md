@@ -341,6 +341,12 @@ If the diff is correct, run `lintian-brush` and review the resulting changes. If
 the package uses `gbp dch` to generate `debian/changelog`, consider
 `lintian-brush --no-update-changelog`.
 
+If the combined dry-run/diff command crashes, record the tool version and exact
+error. Run the dry-run separately, then apply fixes in a disposable copy and
+inspect its diff. This separates tool failure from package findings without
+changing the working package. Report the failed command and the alternative
+checks, never the crash as a pass. Build or test failures still need fixing.
+
 **Run lintian:**
 ```bash
 lintian package.changes
@@ -387,6 +393,9 @@ cme fix dpkg-control
 ```
 
 Review the diff after running `cme`; it can reorder fields or reformat files.
+For generated packaging, such as debcargo output, apply justified changes
+through the generator configuration. Do not copy formatting or compatibility
+level changes into an override just to satisfy the cleanup tool.
 
 **debian/copyright check:**
 ```bash
@@ -395,6 +404,17 @@ lrc
 
 Use `lrc` output to compare `debian/copyright` with licenses detected by
 `licensecheck`.
+
+Use the DEP-5 short name `Expat` when the license text matches that variant
+commonly called MIT. Other MIT-labelled licenses can have different terms.
+Compare the text before choosing a name, and preserve upstream declarations
+when quoting them.
+
+Record copyright holders and years from upstream notices. When using source
+history to infer attribution, state that provenance and uncertainty. Do not
+fill a missing upstream year with the current year by default. Missing license
+text or unclear provenance needs upstream or sponsor clarification. Renaming
+a license stanza does not resolve those questions.
 
 **Routine update workflows:**
 If the package already uses `routine-update`, follow that package workflow
@@ -440,6 +460,11 @@ quilt add src/file.c   # Track file
 quilt refresh          # Update patch
 quilt header -e        # Edit DEP-3 headers
 ```
+
+Check the staged patch files with `git diff --cached --check`. If a blank
+context line triggers a trailing-whitespace warning, trim unnecessary context
+and adjust the hunk counts instead of weakening the check. Reapply the patch
+without fuzz and verify that it produces the same source changes.
 
 ## Common patterns
 
