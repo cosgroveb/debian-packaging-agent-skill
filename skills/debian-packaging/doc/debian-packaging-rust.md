@@ -43,6 +43,17 @@ cd debcargo-conf
 2. Automatically generates debian/ files
 3. Creates appropriate dependencies from Cargo dependencies
 
+Before adding a patch or overriding a generated file, read the installed
+`/usr/share/doc/debcargo/examples/debcargo.toml.example` and nearby packages in
+debcargo-conf. The [upstream example](https://salsa.debian.org/rust-team/debcargo/-/blob/master/debcargo.toml.example)
+documents the available settings. Check that the installed version supports
+the settings you choose.
+
+Put supported customizations in `debian/debcargo.toml`. Regenerate and inspect
+the resulting manifest, dependencies and tests before adding an overlay file.
+When removing an override, remove its obsolete `.debcargo.hint` too. Treat
+remaining hints as generator output, not files to edit by hand.
+
 ### 3. Cargo integration
 
 #### Build system integration
@@ -101,11 +112,59 @@ sbuild --host=$arch --profiles=nocheck $pkg
 - Unit tests run during build
 - Integration tests via autopkgtest framework
 
+Prefer `test_command`, `test_depends`, `test_restrictions` and
+`test_architecture` in debcargo.toml over a handwritten `debian/tests/control`.
+Keep dependency and architecture metadata generated unless a requirement
+cannot be expressed in the configuration.
+
+Use `{stock_cmd}` when adding arguments to the generated command. If the
+default target selection is unsuitable, an explicit command can use
+`{crate_name}`, `{crate_version}` and `{feature_arguments}`. For example,
+tui-textarea-2 needs a widget backend even for backend-independent features:
+
+```toml
+[packages.lib]
+test_command = "/usr/share/cargo/bin/cargo-auto-test {crate_name} {crate_version} {feature_arguments} --features no-backend"
+```
+
+Here `no-backend` enables Ratatui without selecting a terminal backend. This
+choice is specific to that crate. Verify the feature graph before adapting it.
+Inspect inherited commands for the bare library, default, individual features
+and all-features cases after regeneration.
+
+Cargo's `--all-targets` does not include doctests. If documentation tests matter,
+run them separately or use Cargo's default target selection, checking that it
+still covers the required targets. Compare coverage, not just stanza counts,
+when replacing handwritten tests. Run the generated installed-package tests.
+
+`test_is_broken` marks tests flaky. Use it only for a documented known failure,
+not to hide an invalid feature combination that can be tested with the right
+arguments. Do not turn a failing test into a passing result by suppressing it.
+
 ## Handling features
 - Each Cargo feature can become a separate binary package
 - Naming: `librust-<crate>+<feature>-dev`
 - Automatic dependency generation
 - Feature combinations handled through metapackages
+
+Use `collapse_features = true` for the usual single library package, following
+nearby packages and checking for dependency cycles.
+
+Prefer `remove_features` to manually deleting feature definitions and their
+unused optional dependencies from Cargo.toml. Use `remove_target_types` for
+whole target classes, such as benchmarks:
+
+```toml
+remove_features = ["legacy-backend"]
+remove_target_types = ["bench"]
+```
+
+These are top-level settings. Replace the example feature with names from the
+crate. Inspect debcargo's generated patches: target removal may leave unused
+development dependencies, and feature removal may leave examples requiring
+the omitted features. Keep a small manual patch for any remaining changes.
+Do not remove supported examples or dependencies needed by tests. Compare the
+generated feature graph and targets with the intended supported combinations.
 
 ## Special considerations
 

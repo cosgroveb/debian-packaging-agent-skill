@@ -105,6 +105,8 @@ This way you consult documentation when you actually need it, not all upfront.
 
 **Rust (debcargo)**:
 - Use `debcargo` for automatic Rust package generation
+- Read its example configuration before adding patches or generated-file overrides
+- Prefer `remove_features`, `remove_target_types` and test settings in debcargo.toml
 - Understand Cargo.toml -> debian/control mapping
 - Handle feature flags and optional dependencies
 - Manage the Rust dependency stack
@@ -296,13 +298,13 @@ Source: https://example.com/project
 
 Files: *
 Copyright: 2024 Upstream Author <upstream@email>
-License: MIT
+License: Expat
 
 Files: debian/*
 Copyright: 2024 Your Name <your@email>
-License: MIT
+License: Expat
 
-License: MIT
+License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a
  copy of this software and associated documentation files (the "Software"),
  to deal in the Software without restriction...
@@ -378,6 +380,11 @@ Before marking any Debian packaging task complete, run these commands and confir
 9. **Removal test**: `sudo apt remove <package>` - Must remove cleanly
 
 Report results of each command. **Do not claim completion if any check fails.**
+If a cleanup tool crashes, follow the reference's diagnostic fallback and
+report its failure separately from package build and test results. Do not
+rerun a known tool crash indefinitely or describe an alternative check as a
+pass for the failed command. Review generated-file changes through their
+generator configuration.
 
 # Design priorities
 
