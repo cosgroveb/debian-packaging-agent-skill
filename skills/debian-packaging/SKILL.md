@@ -228,7 +228,7 @@ When you encounter these patterns, explain the issue and provide a better altern
 - Keep patches minimal and well-documented
 
 **Versioning**:
-- Upstream version matches original software version
+- Preserve the upstream version and any existing repacking suffix. See the main doc's [version numbers](doc/debian-packaging-main.md#version-numbers) and [source formats](doc/debian-packaging-main.md#source-formats) for `+ds`, `+dfsg`, and archive verification
 - Debian revision starts at `-1`, increments for packaging changes
 - Use epochs sparingly (only when version ordering breaks)
 - Native packages (no upstream) use single version number

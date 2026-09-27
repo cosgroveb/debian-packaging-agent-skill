@@ -195,6 +195,23 @@ Examples:
 - `1.0~rc1-1`: Pre-release
 - `1.0+git20230101-1`: Snapshot
 
+Repacking suffixes belong to `upstream_version`. In `18.23.0+ds-2`,
+`18.23.0+ds` identifies the upstream source and `2` is the Debian revision.
+Enabling a feature with the same source archive is a packaging change. If
+`18.23.0+ds-1` is the latest upload, the next ordinary revision is
+`18.23.0+ds-2`. Check the archive and package workflow before choosing it.
+
+Follow the package's existing repacking convention:
+
+- `+dfsg` commonly marks removal of material that fails the Debian Free
+  Software Guidelines (DFSG).
+- `+ds` means Debian source and commonly marks other repacking, such as
+  removing bundled libraries.
+
+These suffixes describe conventions, not proof of what changed. An absent
+suffix does not prove that Debian used the upstream archive unchanged. See
+[Source formats](#source-formats) for verification.
+
 ### Architecture field
 - `any`: Arch-dependent (needs compilation)
 - `all`: Arch-independent (scripts, docs, etc.)
@@ -435,6 +452,44 @@ instead of reimplementing its steps by hand.
 
 **1.0** - Legacy, avoid
 
+**Repacking and source provenance**
+
+Use the upstream release archive unchanged when possible. With `3.0 (quilt)`,
+keep Debian patches in `debian/patches` and packaging in `debian.tar.xz`.
+Those changes do not require repacking the `.orig.tar.*` archive.
+
+The [DFSG](https://www.debian.org/social_contract#guidelines) define Debian's
+free-software criteria, including source availability, redistribution and
+modification rights, and no discrimination against people or fields of use.
+They apply to documentation, images, and other shipped material as well as
+code. For example, a license that prohibits commercial use fails the DFSG.
+Removing such material from the source archive is a reason to use `+dfsg`.
+Removing a freely licensed bundled library does not itself imply a DFSG issue.
+
+Document exclusions and their reasons in `debian/copyright`. For packages
+using `uscan`, inspect `Files-Excluded` there and the repacking settings in
+`debian/watch`, including `repack` and `repacksuffix`. Keep the process
+reproducible with the package's existing tooling. See
+[mk-origtargz(1)](https://manpages.debian.org/unstable/devscripts/mk-origtargz.1.en.html)
+and Debian's [repacking conventions](https://wiki.debian.org/Javascript/Repacking).
+
+To verify provenance, download Debian's `.orig.tar.*` and the corresponding
+upstream release archive. Compare the archives themselves, not a Git checkout:
+
+```sh
+sha256sum package_1.2.3.orig.tar.gz package-1.2.3.tar.gz
+cmp package_1.2.3.orig.tar.gz package-1.2.3.tar.gz
+```
+
+Matching SHA256 hashes establish that the archives match. `cmp` exits zero
+when the bytes match. Different hashes establish a difference in the archives,
+but compression or archive metadata may account for it. Compare the unpacked
+contents before claiming source changes. Record the versions, download URLs,
+hashes, and comparison date so someone else can repeat the check.
+
+Debian's [Developer's Reference](https://www.debian.org/doc/manuals/developers-reference/best-pkging-practices.html#best-practices-for-orig-tar-gz-bz2-xz-files)
+defines pristine source as an archive identical byte for byte to upstream's.
+
 ## Patches (quilt format)
 
 **debian/patches/series** - List of patches to apply (order matters)
@@ -617,7 +672,7 @@ Indicates which Debian Policy version the package complies with. Update when you
 7. **Conffile handling** - Don't ship /etc files in multiple packages
 8. **Symlink attacks** - Use absolute paths, validate before creating symlinks
 9. **Missing build dependencies** - Build with `sbuild` or equivalent, not only on the developer's machine
-10. **Upstream tarball modifications** - Use +dfsg version suffix, document in copyright
+10. **Undocumented repacking** - Record exclusions and reasons in `debian/copyright`, follow the package's `+ds` or `+dfsg` convention, and keep the process reproducible
 
 ## Workflow summary
 
