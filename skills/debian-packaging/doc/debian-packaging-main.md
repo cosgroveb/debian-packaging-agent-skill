@@ -196,21 +196,21 @@ Examples:
 - `1.0+git20230101-1`: Snapshot
 
 Repacking suffixes belong to `upstream_version`. In `18.23.0+ds-2`,
-`18.23.0+ds` identifies the upstream source and `2` is the Debian revision.
-Enabling a feature with the same source archive is a packaging change. If
-`18.23.0+ds-1` is the latest upload, the next ordinary revision is
-`18.23.0+ds-2`. Check the archive and package workflow before choosing it.
+`18.23.0+ds` is the upstream version and `2` is the Debian revision.
+Enabling a feature with the same source archive is a packaging change.
+If the latest upload to unstable is `18.23.0+ds-1`, the next maintainer
+upload for that change is `18.23.0+ds-2`. Check the package's latest uploads
+and release workflow before choosing the revision.
 
-Follow the package's existing repacking convention:
+Repacking conventions include:
 
-- `+dfsg` commonly marks removal of material that fails the Debian Free
+- `+dfsg` for removing material that fails the Debian Free
   Software Guidelines (DFSG).
-- `+ds` means Debian source and commonly marks other repacking, such as
-  removing bundled libraries.
+- `+ds` (Debian source) for repacking, such as removing bundled libraries.
 
-These suffixes describe conventions, not proof of what changed. An absent
-suffix does not prove that Debian used the upstream archive unchanged. See
-[Source formats](#source-formats) for verification.
+Follow the package's existing convention. Check the
+[source archives](#source-formats) to verify what changed, even if the version
+has no repacking suffix.
 
 ### Architecture field
 - `any`: Arch-dependent (needs compilation)
@@ -441,7 +441,7 @@ instead of reimplementing its steps by hand.
 
 **3.0 (quilt)** - Modern standard for non-native packages
 - Supports multiple upstream tarballs
-- Debian changes in debian.tar.xz
+- Debian changes in debian.tar.*
 - Patches in debian/patches/ (quilt format)
 - Specify in debian/source/format
 
@@ -455,37 +455,42 @@ instead of reimplementing its steps by hand.
 **Repacking and source provenance**
 
 Use the upstream release archive unchanged when possible. With `3.0 (quilt)`,
-keep Debian patches in `debian/patches` and packaging in `debian.tar.xz`.
-Those changes do not require repacking the `.orig.tar.*` archive.
+keep Debian patches in `debian/patches`. Package them with the rest of `debian/`
+in `.debian.tar.*`, as described in
+[dpkg-source(1)](https://manpages.debian.org/unstable/dpkg-dev/dpkg-source.1.en.html).
+You can change the packaging and patches without repacking `.orig.tar.*`.
 
-The [DFSG](https://www.debian.org/social_contract#guidelines) define Debian's
-free-software criteria, including source availability, redistribution and
-modification rights, and no discrimination against people or fields of use.
-They apply to documentation, images, and other shipped material as well as
-code. For example, a license that prohibits commercial use fails the DFSG.
-Removing such material from the source archive is a reason to use `+dfsg`.
-Removing a freely licensed bundled library does not itself imply a DFSG issue.
+The [DFSG](https://www.debian.org/social_contract#guidelines) set Debian's
+free-software requirements, including source availability, permission to
+redistribute and modify, and no discrimination against people or fields of use.
+For packages in
+[`main` and `contrib`](https://www.debian.org/doc/debian-policy/ch-archive.html#archive-areas),
+apply these requirements to documentation, images, and other included files
+as well as code. A license that prohibits commercial use fails the DFSG.
+Removing that material from the source archive is a reason to use `+dfsg`.
+Removing a bundled library under a free license does not imply a DFSG issue.
 
 Document exclusions and their reasons in `debian/copyright`. For packages
 using `uscan`, inspect `Files-Excluded` there and the repacking settings in
-`debian/watch`, including `repack` and `repacksuffix`. Keep the process
-reproducible with the package's existing tooling. See
+`debian/watch`, including `repack` and `repacksuffix`. Document the repacking
+steps so someone else can repeat them with the package's tooling. See
 [mk-origtargz(1)](https://manpages.debian.org/unstable/devscripts/mk-origtargz.1.en.html)
 and Debian's [repacking conventions](https://wiki.debian.org/Javascript/Repacking).
 
-To verify provenance, download Debian's `.orig.tar.*` and the corresponding
-upstream release archive. Compare the archives themselves, not a Git checkout:
+To check whether Debian reused the upstream archive, download Debian's
+`.orig.tar.*` and the corresponding upstream release archive. A Git checkout
+cannot establish whether the archives match byte for byte. Compare the files:
 
 ```sh
 sha256sum package_1.2.3.orig.tar.gz package-1.2.3.tar.gz
 cmp package_1.2.3.orig.tar.gz package-1.2.3.tar.gz
 ```
 
-Matching SHA256 hashes establish that the archives match. `cmp` exits zero
-when the bytes match. Different hashes establish a difference in the archives,
-but compression or archive metadata may account for it. Compare the unpacked
-contents before claiming source changes. Record the versions, download URLs,
-hashes, and comparison date so someone else can repeat the check.
+Use `cmp` to confirm a byte-for-byte match. It exits zero when the bytes match.
+Different SHA256 hashes prove the archives differ, though compression or
+archive metadata may account for it. Compare the unpacked contents before
+claiming source changes. Record the versions, download URLs, hashes, and
+comparison date so someone else can repeat the check.
 
 Debian's [Developer's Reference](https://www.debian.org/doc/manuals/developers-reference/best-pkging-practices.html#best-practices-for-orig-tar-gz-bz2-xz-files)
 defines pristine source as an archive identical byte for byte to upstream's.
