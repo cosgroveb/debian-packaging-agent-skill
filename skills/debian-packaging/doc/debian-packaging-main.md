@@ -500,6 +500,21 @@ defines pristine source as an archive identical byte for byte to upstream's.
 **debian/patches/series** - List of patches to apply (order matters)
 **debian/patches/\*.patch** - Individual patches with DEP-3 headers
 
+Assess new patches and changes to existing patches for upstream submission.
+Check current upstream code and existing issues or pull requests before
+preparing a submission. Forward fixes that benefit upstream users. Keep
+Debian-only packaging adaptations downstream.
+
+Check upstream's supported compiler, runtime, and dependency versions. A fix
+that works in Debian may break compatibility upstream intends to preserve.
+Adapt it to those constraints or explain why it remains downstream. Refreshing
+an old patch does not establish that upstream still needs or will accept it.
+
+After submitting, record the issue or pull request URL in the DEP-3 `Forwarded`
+field. Use `Forwarded: no` while an applicable patch remains unsubmitted, or
+`Forwarded: not-needed` with a reason for a patch that does not belong upstream.
+Record submission separately from acceptance.
+
 **DEP-3 headers:**
 ```
 Description: Fix buffer overflow in parser

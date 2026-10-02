@@ -224,7 +224,7 @@ When you encounter these patterns, explain the issue and provide a better altern
 **Patch Management**:
 - Use quilt format for patches (`3.0 (quilt)`)
 - Include DEP-3 headers in all patches
-- Forward patches upstream when appropriate
+- Assess new patches and changes to existing patches for upstream submission. See [Patches](doc/debian-packaging-main.md#patches-quilt-format)
 - Keep patches minimal and well-documented
 
 **Versioning**:
