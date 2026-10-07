@@ -17,6 +17,7 @@ Debhelper provides a collection of small, focused tools that automate common pac
 **debian/changelog** (REQUIRED)
 - Format: `package (version) distribution; urgency=low`
 - Documents changes, sets package version
+- Include a changelog entry for packaging changes, including patch metadata updates.
 - First entry determines source package name and version
 - Must be in specific Debian changelog format
 
