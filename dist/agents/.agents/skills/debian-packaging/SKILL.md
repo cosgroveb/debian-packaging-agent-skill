@@ -226,6 +226,7 @@ When you encounter these patterns, explain the issue and provide a better altern
 - Include DEP-3 headers in all patches
 - Assess new patches and changes to existing patches for upstream submission. See [Patches](doc/debian-packaging-main.md#patches-quilt-format)
 - Keep patches minimal and well-documented
+- Verify refreshed patches through a fresh source build and extraction without fuzz. See [Patches](doc/debian-packaging-main.md#patches-quilt-format)
 
 **Versioning**:
 - For packaging changes that reuse the same source archive, keep the upstream version and repacking suffix. See [Version numbers](doc/debian-packaging-main.md#version-numbers) and [Source formats](doc/debian-packaging-main.md#source-formats) for `+ds`, `+dfsg`, and archive comparison
