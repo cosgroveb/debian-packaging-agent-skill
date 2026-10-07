@@ -17,8 +17,11 @@ Debhelper provides a collection of small, focused tools that automate common pac
 **debian/changelog** (REQUIRED)
 - Format: `package (version) distribution; urgency=low`
 - Documents changes, sets package version
-- Include a changelog entry for packaging changes, including patch metadata updates.
-- Describe final changes since the previous uploaded version, or the final package for an initial upload. Before recording a removal, check that the previous uploaded version included it. Omit changes introduced and undone within the same unreleased revision.
+- Include a changelog entry for packaging changes, including patch
+  metadata updates.
+- Describe changes since the last upload, or the final package for an
+  initial upload. Verify removed items were in the last upload. Omit
+  changes introduced and undone in the same unreleased revision.
 - First entry determines source package name and version
 - Must be in specific Debian changelog format
 
