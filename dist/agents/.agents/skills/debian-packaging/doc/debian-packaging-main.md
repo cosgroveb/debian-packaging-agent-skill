@@ -541,24 +541,15 @@ quilt refresh          # Update patch
 quilt header --dep3 -e # Add or edit DEP-3 headers
 ```
 
-Quilt can apply an old patch while ignoring mismatched surrounding lines
-("fuzz"). That helps when updating a patch, but `dpkg-source` requires patches
-in `3.0 (quilt)` packages to apply without fuzz. A successful Quilt or debcargo
-run does not prove the source package will build.
+`dpkg-source` requires `3.0 (quilt)` patches to apply without fuzz. When Quilt
+reports fuzz, pop later patches, check each change applied as intended, then
+run `quilt refresh`. Push subsequent patches individually, repeating as needed.
+Preserve patch names and headers. Review the diff for unintended changes.
 
-If Quilt reports fuzz, pop later patches so the affected patch is topmost.
-Inspect the changed code and check that each change reached its intended
-location before running `quilt refresh`. Push subsequent patches one at a
-time and repeat for each affected patch. Use `quilt refresh -U1` when one
-context line is enough to identify the location. Do not reduce context to
-conceal a wrong match. Review the diff for unintended changes. Preserve patch
-names and headers.
-
-From a fresh unpacking of the exact orig tarball with the updated `debian/`
-directory, run `dpkg-source -b .`. For debcargo-conf, copy refreshed patches
-back to the crate's overlay and regenerate first. Extract the resulting `.dsc`
-with `dpkg-source -x` into a new directory to verify the shipped patch series.
-Do not increase fuzz tolerance to pass these checks.
+For debcargo-conf, copy refreshed patches back to the crate's overlay and
+regenerate. From a fresh unpacking of the exact orig tarball with updated
+`debian/`, run `dpkg-source -b .`, then extract the `.dsc` into a new directory
+with `dpkg-source -x`. Both checks must pass without fuzz.
 
 See [quilt(1)](https://manpages.debian.org/unstable/quilt/quilt.1.en.html)
 and [dpkg-source(1)](https://manpages.debian.org/unstable/dpkg-dev/dpkg-source.1.en.html).

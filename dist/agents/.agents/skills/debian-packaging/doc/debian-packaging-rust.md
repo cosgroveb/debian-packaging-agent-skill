@@ -54,6 +54,10 @@ the resulting manifest, dependencies and tests before adding an overlay file.
 When removing an override, remove its obsolete `.debcargo.hint` too. Treat
 remaining hints as generator output, not files to edit by hand.
 
+Compare generated patches and `series` with Git before pushing. In
+debcargo-conf, include patches from `filter_targets` and `remove_features`,
+even when using `--no-overlay-write-back`. A passing build does not check this.
+
 ### 3. Cargo integration
 
 #### Build system integration
